@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Whiteboard</title>
+    <meta name="description" content="A local whiteboard for Zoom: draw, design, and save." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23241f1b'/%3E%3Cpath d='M8 22c4-8 12-8 16 0' fill='none' stroke='%23d85a2a' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <input
+            id="board-name"
+            class="board-name"
+            type="text"
+            value="Untitled board"
+            maxlength="80"
+            aria-label="Board name"
+          />
+        </div>
+
+        <div class="top-actions">
+          <button type="button" class="btn ghost" id="btn-undo" title="Undo (Ctrl+Z)" aria-label="Undo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8H4v4m.2-3.2A8 8 0 1 1 4 12" /></svg>
+          </button>
+          <button type="button" class="btn ghost" id="btn-redo" title="Redo (Ctrl+Y)" aria-label="Redo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8h4v4m-.2-3.2A8 8 0 1 0 20 12" /></svg>
+          </button>
+          <span class="divider"></span>
+          <button type="button" class="btn ghost" id="btn-grid" title="Toggle grid (G)" aria-pressed="true">Grid</button>
+          <button type="button" class="btn ghost" id="btn-present" title="Dim the chrome for screen sharing">Present</button>
+          <div class="menu-wrap">
+            <button type="button" class="btn solid" id="btn-save" title="Save (Ctrl+S)">Save</button>
+            <div class="menu" id="save-menu" hidden>
+              <button type="button" id="save-png">Download PNG</button>
+              <button type="button" id="save-json">Download board file</button>
+              <button type="button" id="load-json">Open board file</button>
+              <button type="button" id="copy-png">Copy image</button>
+            </div>
+          </div>
+          <button type="button" class="btn ghost" id="btn-fullscreen" title="Fullscreen (F)">Fullscreen</button>
+          <button type="button" class="btn ghost" id="btn-help" title="Shortcuts (?)">?</button>
+        </div>
+      </header>
+
+      <aside class="toolbar" aria-label="Tools">
+        <button type="button" class="tool active" data-tool="pen" title="Pen (1)">
+          <svg viewBox="0 0 24 24"><path d="M4 20l3.2-.8L18.5 7.9a2.1 2.1 0 0 0-3-3L4.2 16.3 4 20z" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="highlighter" title="Highlighter (2)">
+          <svg viewBox="0 0 24 24"><path d="M5 19h6l8-8-4-4-8 8v4zM15 7l2 2" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="eraser" title="Eraser (3)">
+          <svg viewBox="0 0 24 24"><path d="M4.8 15.2 12.5 7.5a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8l-7 7H7.2z" /></svg>
+        </button>
+        <span class="tool-rule"></span>
+        <button type="button" class="tool" data-tool="line" title="Line (4)">
+          <svg viewBox="0 0 24 24"><path d="M5 19L19 5" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="arrow" title="Arrow (5)">
+          <svg viewBox="0 0 24 24"><path d="M5 19L19 5m0 0h-5m5 0v5" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="rect" title="Rectangle (6)">
+          <svg viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="1.5" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="ellipse" title="Ellipse (7)">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="text" title="Text (8)">
+          <svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v14M8 20h8" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="note" title="Sticky note (9)">
+          <svg viewBox="0 0 24 24"><path d="M7 5h8l4 4v10H7zM15 5v4h4" /></svg>
+        </button>
+        <span class="tool-rule"></span>
+        <button type="button" class="tool" data-tool="laser" title="Laser (L)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" /><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="pan" title="Pan (hold Space)">
+          <svg viewBox="0 0 24 24"><path d="M9 11V7a1.5 1.5 0 0 1 3 0v2m0 0V8a1.5 1.5 0 0 1 3 0v3m0 0V9a1.5 1.5 0 0 1 3 0v7a5 5 0 0 1-5 5H11a5 5 0 0 1-5-5v-3.5A1.5 1.5 0 0 1 7.5 11 1.5 1.5 0 0 1 9 12.5V11" /></svg>
+        </button>
+      </aside>
+
+      <aside class="props" aria-label="Stroke and color">
+        <div class="swatches" id="swatches"></div>
+        <label class="size-label">
+          <span id="size-value">4</span>
+          <input id="size" type="range" min="1" max="48" value="4" />
+        </label>
+        <button type="button" class="chip" id="btn-fill" aria-pressed="false">Fill</button>
+        <input id="color-picker" type="color" value="#1f1b16" title="Custom color" />
+      </aside>
+
+      <main class="stage">
+        <canvas id="board"></canvas>
+        <textarea id="text-input" hidden placeholder="Type here, then press Enter"></textarea>
+        <div id="laser-dot" hidden></div>
+        <div id="cursor-label" hidden></div>
+      </main>
+
+      <footer class="statusbar">
+        <div class="pages" id="pages"></div>
+        <button type="button" class="btn ghost small" id="btn-add-page" title="Add page">+ Page</button>
+        <div class="spacer"></div>
+        <span id="status">Ready</span>
+        <div class="zoom">
+          <button type="button" class="btn ghost small" id="zoom-out" title="Zoom out">−</button>
+          <button type="button" class="btn ghost small" id="zoom-reset" title="Reset zoom (0)">100%</button>
+          <button type="button" class="btn ghost small" id="zoom-in" title="Zoom in">+</button>
+        </div>
+      </footer>
+    </div>
+
+    <input id="file-input" type="file" accept="application/json,.json,.whiteboard" hidden />
+
+    <div id="help" class="modal" hidden>
+      <div class="sheet">
+        <h2>On Zoom</h2>
+        <p>Open this page, click <strong>Fullscreen</strong>, then in Zoom choose <strong>Share → Window</strong> and pick this browser. Draw while you talk. The board autosaves in this browser.</p>
+        <h2>Shortcuts</h2>
+        <ul>
+          <li><kbd>1</kbd>–<kbd>9</kbd> tools</li>
+          <li><kbd>L</kbd> laser · <kbd>G</kbd> grid · <kbd>F</kbd> fullscreen</li>
+          <li><kbd>Space</kbd> + drag to pan · scroll to zoom</li>
+          <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo · <kbd>Ctrl</kbd>+<kbd>Y</kbd> redo</li>
+          <li><kbd>Ctrl</kbd>+<kbd>S</kbd> download PNG</li>
+          <li><kbd>[</kbd> <kbd>]</kbd> stroke size</li>
+        </ul>
+        <button type="button" class="btn solid" id="help-close">Got it</button>
+      </div>
+    </div>
+
+    <div id="toast" hidden></div>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -205,6 +205,8 @@ textarea {
   gap: 4px;
   padding: 8px;
   border-radius: 16px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .tool {
@@ -238,6 +240,15 @@ textarea {
   height: 1px;
   margin: 4px 8px;
   background: rgba(255, 247, 238, 0.12);
+}
+
+.tool-label {
+  color: #9a9086;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 4px 0 2px;
 }
 
 .props {
@@ -351,6 +362,12 @@ textarea {
 
 #text-input:not([hidden]) {
   display: block;
+}
+
+#text-input.flow-edit {
+  text-align: center;
+  resize: none;
+  min-height: 44px;
 }
 
 #laser-dot {

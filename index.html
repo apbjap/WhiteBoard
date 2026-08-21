@@ -48,6 +48,21 @@
       </header>
 
       <aside class="toolbar" aria-label="Tools">
+        <span class="tool-label">Flow</span>
+        <button type="button" class="tool" data-tool="select" title="Select and move (V)">
+          <svg viewBox="0 0 24 24"><path d="M5 4l6 16 2.2-6.2L19.5 12z" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="flow-box" title="Process step (B)">
+          <svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="flow-if" title="What-if / decision (D)">
+          <svg viewBox="0 0 24 24"><path d="M12 4l8 8-8 8-8-8z" /></svg>
+        </button>
+        <button type="button" class="tool" data-tool="flow-link" title="Connect steps (C)">
+          <svg viewBox="0 0 24 24"><path d="M6 6h6v6h6" /><path d="M15 9l3 3-3 3" /></svg>
+        </button>
+        <span class="tool-rule"></span>
+        <span class="tool-label">Draw</span>
         <button type="button" class="tool active" data-tool="pen" title="Pen (1)">
           <svg viewBox="0 0 24 24"><path d="M4 20l3.2-.8L18.5 7.9a2.1 2.1 0 0 0-3-3L4.2 16.3 4 20z" /></svg>
         </button>
@@ -123,7 +138,11 @@
         <p>Open this page, click <strong>Fullscreen</strong>, then in Zoom choose <strong>Share → Window</strong> and pick this browser. Draw while you talk. The board autosaves in this browser.</p>
         <h2>Shortcuts</h2>
         <ul>
-          <li><kbd>1</kbd>–<kbd>9</kbd> tools</li>
+          <li><kbd>1</kbd>–<kbd>9</kbd> draw tools · <kbd>V</kbd> select</li>
+          <li><kbd>B</kbd> process box · <kbd>D</kbd> what-if diamond · <kbd>C</kbd> connect</li>
+          <li>Double-click a flowchart shape to edit its text</li>
+          <li>From a what-if, connect twice and label the arrows Yes / No</li>
+          <li><kbd>Delete</kbd> removes the selected shape</li>
           <li><kbd>L</kbd> laser · <kbd>G</kbd> grid · <kbd>F</kbd> fullscreen</li>
           <li><kbd>Space</kbd> + drag to pan · scroll to zoom</li>
           <li><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo · <kbd>Ctrl</kbd>+<kbd>Y</kbd> redo</li>

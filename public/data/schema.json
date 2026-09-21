@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cursor.local/peptide-protocol-db/schema.json",
+  "title": "Red Fox Peptides Protocol Library Dataset",
+  "description": "Machine-readable extract of the Red Fox Peptides protocol-library SPA (RFP_PROTOCOLS widget). Vendor community-practice content for research KB use.",
+  "type": "object",
+  "required": ["meta", "shared_templates", "related_resources", "protocols"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["dataset_id", "source_hub_url", "extracted_at", "record_count"],
+      "properties": {
+        "dataset_id": { "type": "string" },
+        "source_name": { "type": "string" },
+        "source_hub_url": { "type": "string", "format": "uri" },
+        "source_page_title": { "type": ["string", "null"] },
+        "source_page_description": { "type": ["string", "null"] },
+        "hub_disclaimer": { "type": ["string", "null"] },
+        "extracted_at": { "type": "string", "description": "ISO-8601 UTC timestamp of extraction" },
+        "extractor": { "type": "string" },
+        "record_count": { "type": "integer", "minimum": 0 },
+        "related_resource_count": { "type": "integer", "minimum": 0 },
+        "content_framing": { "type": "string" },
+        "known_limitations": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "shared_templates": {
+      "type": "object",
+      "description": "Defaults referenced by many protocol records via uses_standard_template flags",
+      "properties": {
+        "reconstitution_standard": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "RECON_STD steps from the widget (bac water, wall pour, swirl, clear solution)"
+        },
+        "storage_standard": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "STORAGE steps from the widget (lyophilized + reconstituted handling)"
+        },
+        "widget_links": {
+          "type": "object",
+          "properties": {
+            "RECON_GUIDE": { "type": "string", "format": "uri" },
+            "DOSE_CALC": { "type": "string", "format": "uri" }
+          }
+        }
+      }
+    },
+    "related_resources": {
+      "type": "array",
+      "description": "Support pages linked from the library widget (not compound records)",
+      "items": { "$ref": "#/$defs/relatedResource" }
+    },
+    "protocols": {
+      "type": "array",
+      "description": "One record per compound card in the library",
+      "items": { "$ref": "#/$defs/protocol" }
+    }
+  },
+  "$defs": {
+    "relatedResource": {
+      "type": "object",
+      "required": ["id", "kind", "url"],
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "type": "string", "enum": ["tool", "guide"] },
+        "url": { "type": "string", "format": "uri" },
+        "linked_from": { "type": "array", "items": { "type": "string" } },
+        "title": { "type": "string" },
+        "h1": { "type": "string" },
+        "description": { "type": "string" },
+        "http_status": { "type": "integer" },
+        "fetched_bytes": { "type": "integer" },
+        "role": { "type": "string" }
+      }
+    },
+    "vialOption": {
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number" },
+        "amount_unit": { "type": "string", "enum": ["mg", "IU"] },
+        "bac_water_ml_options": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "bac_water_ml_default": { "type": "number" }
+      }
+    },
+    "protocolBlock": {
+      "type": "object",
+      "properties": {
+        "label": { "type": ["string", "null"] },
+        "text": { "type": "string" },
+        "html": { "type": "string" }
+      }
+    },
+    "blend": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "ratio": { "type": "string" },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "ratio_part": { "type": "number" }
+            }
+          }
+        },
+        "dose_by": { "type": "string" },
+        "combined_vial_mg": { "type": "number" }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "required": ["id", "name", "entry_type", "product_url"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SPA id (data-id on hub cards), e.g. retatrutide"
+        },
+        "name": { "type": "string", "description": "Display name on card and detail h3" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Search aliases used by the hub filter"
+        },
+        "entry_type": {
+          "type": "string",
+          "enum": ["standard", "iu", "premixed"],
+          "description": "standard=lyophilized mg peptides; iu=IU vials; premixed=ready liquid (oil or aqueous)"
+        },
+        "product_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Shop CTA target from the detail footer button"
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "hub_url": { "type": "string" },
+            "spa_id": { "type": "string" },
+            "access": { "type": "string" }
+          }
+        },
+        "vials": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/vialOption" },
+          "description": "Normalized vial sizes + bac water options (null for premixed)"
+        },
+        "vials_raw": {
+          "description": "Original vials array from RFP_PROTOCOLS ({mg|iu, bac, bacDefault})"
+        },
+        "premixed": {
+          "type": ["object", "null"],
+          "description": "Populated when entry_type=premixed",
+          "properties": {
+            "concentration": { "type": "number" },
+            "unit": { "type": "string" },
+            "volume_ml": { "type": "number" },
+            "oil": { "type": "boolean" },
+            "handling_html": { "type": ["string", "array", "null"] },
+            "handling_text": { "type": ["string", "array", "null"] }
+          }
+        },
+        "warning_html": { "type": ["string", "null"], "description": "UI 'Important' banner HTML" },
+        "warning_text": { "type": ["string", "null"] },
+        "bac_note_html": { "type": ["string", "null"], "description": "Reconstitution helper note under bac pills" },
+        "bac_note_text": { "type": ["string", "null"] },
+        "kit_note_html": { "type": ["string", "null"], "description": "Optional kit note (e.g. HGH)" },
+        "kit_note_text": { "type": ["string", "null"] },
+        "reconstitution": {
+          "type": ["object", "null"],
+          "properties": {
+            "uses_standard_template": { "type": "boolean" },
+            "steps_html": { "type": ["array", "null"], "items": { "type": "string" } },
+            "steps_text": { "type": "array", "items": { "type": "string" } },
+            "standard_template_ref": { "type": ["string", "null"] }
+          }
+        },
+        "protocol_html": {
+          "description": "Raw Suggested Protocol HTML (may contain rfp-pl__pblock markup)"
+        },
+        "protocol_blocks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/protocolBlock" },
+          "description": "Parsed labeled protocol sections for app display"
+        },
+        "dosing_html": {
+          "description": "Raw dosing bullet list (often string[])"
+        },
+        "dosing_text": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "duration_html": { "type": ["string", "null"] },
+        "duration_text": { "type": ["string", "null"] },
+        "notes_html": {},
+        "notes_text": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "storage": {
+          "type": "object",
+          "properties": {
+            "uses_standard_template": { "type": "boolean" },
+            "steps_html": { "type": ["array", "null"], "items": { "type": "string" } },
+            "steps_text": { "type": "array", "items": { "type": "string" } },
+            "standard_template_ref": { "type": ["string", "null"] }
+          }
+        },
+        "blend": {
+          "oneOf": [
+            { "$ref": "#/$defs/blend" },
+            { "type": "null" }
+          ],
+          "description": "Structured blend metadata when the compound is a multi-peptide SKU"
+        },
+        "oil": { "type": "boolean", "description": "Premixed oil (affects syringe guidance in UI)" },
+        "ml_syringe": {
+          "type": "boolean",
+          "description": "Widget supports mlSyringe flag; none set in current payload"
+        },
+        "ui_sections": {
+          "type": "array",
+          "description": "Map of detail-view sections to source fields (parity with renderDetail)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "heading": { "type": "string" },
+              "source_fields": { "type": "array", "items": { "type": "string" } },
+              "helpers": { "type": "array", "items": { "type": "string" } },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "ui_helpers": {
+          "type": "object",
+          "properties": {
+            "dose_draw_helper": { "type": "boolean" },
+            "amount_unit": { "type": "string" },
+            "reconstitution_guide_link": { "type": "boolean" },
+            "dose_calculator_link": { "type": "boolean" }
+          }
+        },
+        "raw_payload_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keys present on the original RFP_PROTOCOLS object for this entry"
+        }
+      }
+    }
+  },
+  "field_dictionary": {
+    "id": "Stable SPA identifier; use as primary key in apps.",
+    "name": "Human-readable compound/product name shown on hub card and detail title.",
+    "aliases": "Lowercase search tokens (typos, nicknames, class labels).",
+    "entry_type": "Controls UI: reconstitution vs Handling; dose unit mg vs IU vs premixed unit.",
+    "product_url": "WooCommerce product page linked from the orange CTA.",
+    "vials": "Normalized list of sellable strengths and allowed bac-water volumes.",
+    "warning_*": "Diluent / safety banners (Reta saline ban, AOD acetic acid, SLU-PP DMSO, IGF hypoglycemia).",
+    "bac_note_*": "Compound-specific reconstitution tips and blend ratio explanations.",
+    "kit_note_*": "Rare kit packaging note (HGH).",
+    "reconstitution": "Mix steps; often points at shared_templates.reconstitution_standard.",
+    "protocol_blocks": "Suggested Protocol broken into labeled subsections (titration schedules, etc.).",
+    "dosing_text": "Bullet guidance under Dosing Detail (ranges, frequency cues).",
+    "duration_text": "Cycle length / maintenance / break language.",
+    "notes_text": "Mechanism, stacking, side-effect, site-rotation bullets.",
+    "storage": "Lyophilized/reconstituted handling; often shared template.",
+    "blend": "Parsed multi-peptide composition when applicable.",
+    "ui_sections": "Documents what the live detail view renders from this record.",
+    "related_resources": "Calculator + guides; metadata only, not protocol rows."
+  }
+}

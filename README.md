@@ -6,7 +6,9 @@ Public browser for the **Red Fox Peptides** protocol-library extract — dosing 
 
 ## Live
 
-- Site: deploy to Netlify (see below); intended site name **PeptideInfo**
+- **GitHub (current push target):** this code lives on branch [`cursor/peptideinfo-site-470b`](https://github.com/apbjap/WhiteBoard/tree/cursor/peptideinfo-site-470b) of `apbjap/WhiteBoard` ([PR #2](https://github.com/apbjap/WhiteBoard/pull/2)) because the Cloud Agent GitHub App cannot create a new `PeptideInfo` repository.
+- **Intended repo name:** create empty `apbjap/PeptideInfo`, then push this tree as `main` (see below).
+- **Netlify:** site name intended **PeptideInfo** / `peptideinfo`. CLI is configured via `netlify.toml`; deploy requires `NETLIFY_AUTH_TOKEN` or `netlify login` (not available in the agent environment yet).
 - Data source: [Red Fox Peptides Protocol Library](https://www.redfoxpeptides.is/protocol-library/)
 
 ## Stack
@@ -28,6 +30,15 @@ npm run build    # output in dist/
 npm run preview  # preview production build
 ```
 
+## Publish as PeptideInfo on GitHub
+
+```bash
+# after creating empty https://github.com/apbjap/PeptideInfo
+git clone <this-branch-or-checkout>
+git remote set-url origin https://github.com/apbjap/PeptideInfo.git
+git push -u origin HEAD:main
+```
+
 ## Netlify
 
 `netlify.toml` is configured:
@@ -35,17 +46,19 @@ npm run preview  # preview production build
 - Build command: `npm run build`
 - Publish directory: `dist`
 - SPA fallback: `/* → /index.html`
+- Node 22
 
 ### CLI deploy (if authenticated)
 
 ```bash
-npm install -g netlify-cli
-netlify login
-netlify init          # create site named PeptideInfo / peptideinfo
-netlify deploy --prod
+npm install -g netlify-cli   # or use a local prefix
+export NETLIFY_AUTH_TOKEN=…  # from https://app.netlify.com/user/applications#personal-access-tokens
+netlify sites:create --name peptideinfo
+netlify link
+netlify deploy --prod --dir=dist
 ```
 
-Or connect this GitHub repo in the Netlify UI and set site name to **PeptideInfo**.
+Or connect the GitHub repo in the Netlify UI, set site name to **PeptideInfo**, build command `npm run build`, publish `dist`.
 
 ## Data attribution
 

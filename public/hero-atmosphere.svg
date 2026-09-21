@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="g1" cx="30%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#1A6B6C" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#0F3D3E" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0A2526" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="78%" cy="28%" r="40%">
+      <stop offset="0%" stop-color="#C8793A" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#C8793A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8F2F2" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#E8F2F2" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grain" width="120" height="120" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="18" r="0.8" fill="#F4F0E8" opacity="0.12"/>
+      <circle cx="44" cy="52" r="0.6" fill="#F4F0E8" opacity="0.08"/>
+      <circle cx="88" cy="24" r="0.7" fill="#F4F0E8" opacity="0.1"/>
+      <circle cx="66" cy="90" r="0.5" fill="#F4F0E8" opacity="0.07"/>
+      <circle cx="28" cy="78" r="0.9" fill="#F4F0E8" opacity="0.09"/>
+      <circle cx="102" cy="64" r="0.6" fill="#F4F0E8" opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#0C2E2F"/>
+  <rect width="1600" height="900" fill="url(#g1)"/>
+  <rect width="1600" height="900" fill="url(#g2)"/>
+  <rect width="1600" height="900" fill="url(#grain)"/>
+  <!-- soft glassware silhouettes -->
+  <g opacity="0.22" fill="none" stroke="#B8D4D4" stroke-width="1.5">
+    <ellipse cx="1180" cy="520" rx="70" ry="18"/>
+    <path d="M1110 520 v-180 c0-40 28-70 70-70s70 30 70 70v180"/>
+    <path d="M1135 340 h90"/>
+    <path d="M1125 420 h110"/>
+  </g>
+  <g opacity="0.16" fill="none" stroke="#B8D4D4" stroke-width="1.25">
+    <path d="M1320 680 c40-120 20-220-10-280"/>
+    <path d="M1360 680 c-20-100 10-200 40-260"/>
+    <ellipse cx="1355" cy="680" rx="55" ry="12"/>
+  </g>
+  <!-- microscopy rings -->
+  <g opacity="0.2" fill="none" stroke="#9EC5C5" stroke-width="1">
+    <circle cx="320" cy="240" r="90"/>
+    <circle cx="320" cy="240" r="60"/>
+    <circle cx="320" cy="240" r="28"/>
+    <circle cx="300" cy="220" r="8" fill="#9EC5C5" opacity="0.35" stroke="none"/>
+    <circle cx="350" cy="255" r="5" fill="#9EC5C5" opacity="0.3" stroke="none"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#glass)"/>
+</svg>
